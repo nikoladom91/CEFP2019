@@ -1,0 +1,25 @@
+heat_template_version: 2013-05-23
+
+description: Simple template to deploy a single compute instance
+
+resources:
+  my_instance:
+    type: OS::Neutron::Router
+    properties:
+      name: my_key1
+      flavor: m1.small
+      key_name: my_key1
+      networks:
+        - network: my_net1
+  my_net1:
+    type: OS::Neutron::Net
+    properties:
+      name: my_net1
+  my_sub1:
+    type: OS::Neutron::Subnet
+    properties:
+      allocation_pools: [{"start": 10.0.0.2, "end": 10.0.0.10}]
+      cidr: 10.0.0.0/24
+      name: my_sub1
+      network: { get_resource: my_net1 }
+      dns_nameservers: [8.8.8.8]

@@ -1,0 +1,41 @@
+
+  
+get token 
+  
+curl -i \
+  -H "Content-Type: application/json" \
+  -d '
+{ "auth": {
+    "identity": {
+      "methods": ["password"],
+      "password": {
+        "user": {
+          "name": "username",
+          "domain": { "id": "default" },
+          "password": "password"
+        }
+      }
+    },
+    "scope": {
+      "project": {
+        "name": "IaaS_271099",
+        "domain": { "id": "default" }
+      }
+    }
+  }
+}' \
+  "http://openstack.homeatcloud.cz:5000/v3/auth/tokens" ; echo
+  
+
+
+
+list instances
+  
+curl -s -H"X-Auth-Token:096a4e3a4657453f887fb9132c8e9838" -H "Content-type: application/json" http://openstack.homeatcloud.cz:8774/v2.1/dd1318c97eb64678a604c3be5ec48f7a/servers
+  
+  
+  
+
+  
+  
+  

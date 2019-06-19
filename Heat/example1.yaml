@@ -1,0 +1,9 @@
+heat_template_version: 2013-05-23
+
+description: Simple template to deploy a single neutron network
+
+resources:
+  my_net1:
+    type: OS::Neutron::Net
+    properties:
+      name: my_net1

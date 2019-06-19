@@ -1,0 +1,62 @@
+
+heat_template_version: 2013-05-23
+
+description: Excercise using cloud_init
+
+parameters:
+  name:
+    type: string
+    label: Users name
+    description: Who is startng this script?
+    default: John
+  image:
+    type: string
+    label: Image name or ID
+    description: Image to be used for compute instance
+    default: cirros
+  flavor:
+    type: string
+    label: Flavor
+    description: Type of instance (flavor) to be used
+    default: b1.micro
+  private_network:
+    type: string
+    label: Private network name or ID
+    description: Network to attach instance to.
+    default: lecture_net
+
+
+resources:
+  rng:
+    type: OS::Heat::RandomString
+    properties:
+      length: 4
+      sequence: digits
+  inst_simple:
+    type: OS::Nova::Server
+    properties:
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      networks:
+        - network: { get_param: private_network }
+      user_data_format: RAW
+      user_data: |
+        #!/bin/sh
+        echo "Hello, World!" >> /home/cirros/hello.txt
+  inst_advanced:
+    type: OS::Nova::Server
+    properties:
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      networks:
+        - network: { get_param: private_network }
+      user_data_format: RAW
+      user_data:
+        str_replace:
+          params:
+            __name__: { get_param: name }
+            __rnum__: { get_attr: [rng, value] }
+          template: |
+            #!/bin/sh
+            echo "Hello, World!" >> /home/cirros/ahello.txt
+            echo "Hello, my name is __name__. Here is a random number: __rnum__." >> /home/cirros/hello.txt

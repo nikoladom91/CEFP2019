@@ -1,0 +1,44 @@
+heat_template_version: 2013-05-23
+
+description: Simple template to deploy a single compute instance
+
+resources:
+  my_net1:
+    type: OS::Neutron::Net
+    properties:
+      name: my_net1
+  my_sub1:
+    type: OS::Neutron::Subnet
+    properties:
+      allocation_pools: [{"start": 10.0.0.2, "end": 10.0.0.10}]
+      cidr: 10.0.0.0/24
+      name: my_sub1
+      network: { get_resource: my_net1 }
+      dns_nameservers: [8.8.8.8]
+  my_sub2:
+    type: OS::Neutron::Subnet
+    properties:
+      allocation_pools: [{"start": 11.0.0.2, "end": 11.0.0.10}]
+      cidr: 11.0.0.0/24
+      name: my_sub1
+      network: { get_resource: my_net1 }
+      dns_nameservers: [8.8.8.8]
+  my_secgroup1:
+    type: OS::Neutron::SecurityGroup
+    properties:
+      name: my_secgroup1
+      rules: [{"direction": ingress, "protocol": icmp}, {"direction": egress, "protocol": icmp}]
+  my_instance1:
+    type: OS::Nova::Server
+    properties:
+      image: cirros
+      flavor: b1.micro
+      networks: [{"network": { get_resource: my_net1 }, "subnet": { get_resource: my_sub1 }}]
+      security_groups: [{ get_resource: my_secgroup1 }]
+  my_instance2:
+    type: OS::Nova::Server
+    properties:
+      image: cirros
+      flavor: b1.micro
+      networks: [{"network": { get_resource: my_net1 }, "subnet": { get_resource: my_sub2 }}]
+      security_groups: [{ get_resource: my_secgroup1 }]
